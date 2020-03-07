@@ -2,7 +2,6 @@ const express = require("express");
 const fs = require("fs");
 const { promisify } = require("util");
 const path = require("path");
-const getAndRenderNotes = require("./public/assets/js/index");
 const Note = require("./public/assets/js/Note");
 const shortid = require("shortid");
 
@@ -50,7 +49,6 @@ app.delete("/api/notes/:id", (req, res) => {
 });
     
 app.post("/api/notes", (req, res) => {
-    //addNotes(req);
     const { title, text, id } = req.body;
     const newNote = new Note(title, text, shortid.generate());
     readFile("./db/db.json", "utf-8", (err, data) => {
@@ -72,47 +70,3 @@ app.post("/api/notes", (req, res) => {
 app.listen(PORT, () => {
     console.log("App listening on PORT " + PORT);
 });
-
-
-//  Async/promise sections
-async function addNotes(req) {
-    try {
-        let notes;
-
-        await readFile("./db/db.json", "utf-8", (err, data) => {
-            notes = JSON.parse(data);
-            notes.push(req.body);
-        });
-
-        await writeFile("./db/db.json", JSON.stringify(notes, null, 2), (err) => {
-            if (err) throw err;
-            getAndRenderNotes();
-        });
-
-        updateNotes();
-    } catch (err) {
-        throw err;
-    }
-}
-
-const updateNotes = () => {
-    app.get("/api/notes", (req, res) => {
-        readFile("./db/db.json", "utf-8", (err, data) => {
-            return res.json(JSON.parse(data));
-        });
-    });
-};
-
-// readFile("./db/db.json", "utf-8", (err, data) => {
-//     if (err) throw err;
-//     let notes = JSON.parse(data);
-//     notes.push(req.body);
-//     return notes;
-// }).then((res) => {
-//     writeFile("./db/db.json", JSON.stringify(res, null, 2), (err) => {
-//     if(err) throw err;
-//     }).then(() => {
-//         getAndRenderNotes();
-//         updateNotes();
-//     });
-// });
