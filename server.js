@@ -36,15 +36,15 @@ app.delete("/api/notes/:id", (req, res) => {
             throw err;
         }
         let notes = JSON.parse(data);
-        for (let note of notes) {
-            if (notes[note].id === id) {
-                notes.splice(note, 1);
+        notes.forEach((note, index) => {
+            if (notes[index].id === id) {
+                notes.splice(index, 1);
                 writeFile("./db/db.json", JSON.stringify(notes, null, 2), (err) => {
                     if (err) throw err;
                 });
                 return;
             }
-        }
+        });
     });
 });
     
@@ -54,12 +54,12 @@ app.post("/api/notes", (req, res) => {
     readFile("./db/db.json", "utf-8", (err, data) => {
         if (err) throw err;
         let notes = JSON.parse(data);
-        for (let note in notes) {
-            if (notes[note].id === id) {
+        notes.forEach((note, index) => {
+            if (notes[index].id === id) {
                 res.end();
                 return;
             }
-        }
+        });
         notes.push(newNote);
         writeFile("./db/db.json", JSON.stringify(notes, null, 2), (err) => {
             if(err) throw err;
