@@ -73,6 +73,8 @@ app.listen(PORT, () => {
     console.log("App listening on PORT " + PORT);
 });
 
+
+//  Async/promise sections
 async function addNotes(req) {
     try {
         let notes;
