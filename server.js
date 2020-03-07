@@ -29,6 +29,25 @@ app.get("/api/notes", (req, res) => {
         return res.json(JSON.parse(data));
     });
 });
+
+app.delete("/api/notes/:id", (req, res) => {
+    let id = req.params.id;
+    fs.readFile("./db/db.json", "utf-8", (err, data) => {
+        if (err) {
+            throw err;
+        }
+        let notes = JSON.parse(data);
+        for (let note of notes) {
+            if (notes[note].id === id) {
+                notes.splice(note, 1);
+                writeFile("./db/db.json", JSON.stringify(notes, null, 2), (err) => {
+                    if (err) throw err;
+                });
+                return;
+            }
+        }
+    });
+});
     
 app.post("/api/notes", (req, res) => {
     //addNotes(req);
